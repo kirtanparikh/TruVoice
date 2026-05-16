@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Message } from "@/model/User";
+import { AcceptMessageSchema } from "@/schemas/acceptMessageSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
@@ -14,7 +15,6 @@ import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { AcceptMessageSchema } from "@/schemas/acceptMessageSchema";
 
 function UserDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -81,7 +81,7 @@ function UserDashboard() {
         setIsSwitchLoading(false);
       }
     },
-    [setIsLoading, setMessages, toast]
+    [setIsLoading, setMessages, toast],
   );
 
   useEffect(() => {
@@ -120,22 +120,28 @@ function UserDashboard() {
 
   const { username } = session.user as User;
 
-  const baseUrl = `${window.location.protocol}//${window.location.host}`;
+  const baseUrl = `${window.location.protocol}//${window.location.host.replace(
+    /\.tech(:\d+)?$/,
+    ".com$1",
+  )}`;
   const profileUrl = `${baseUrl}/u/${username}`;
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(profileUrl).then(() => {
-      toast({
-        title: "URL Copied!",
-        description: "Profile URL has been copied to clipboard.",
+    navigator.clipboard
+      .writeText(profileUrl)
+      .then(() => {
+        toast({
+          title: "URL Copied!",
+          description: "Profile URL has been copied to clipboard.",
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Error",
+          description: "Failed to copy URL to clipboard.",
+          variant: "destructive",
+        });
       });
-    }).catch(err => {
-      toast({
-        title: "Error",
-        description: "Failed to copy URL to clipboard.",
-        variant: "destructive",
-      });
-    });
   };
 
   return (

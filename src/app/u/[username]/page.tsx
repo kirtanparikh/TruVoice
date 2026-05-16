@@ -17,7 +17,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCompletion } from "ai/react";
 import axios, { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -157,23 +157,26 @@ export default function SendMessage() {
                   <div className="relative">
                     <Textarea
                       placeholder="Write your anonymous message here"
-                      className="resize-none pr-20"
+                      className="resize-none pr-32"
                       {...field}
                     />
                     <Button
                       type="button"
                       onClick={refineMessage}
                       disabled={isGeneratingFeedback || !messageContent}
-                      className="absolute top-2 right-2 h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700"
+                      className="absolute top-2 right-2 h-8 gap-1 px-3 text-xs"
                       variant="secondary"
                     >
                       {isGeneratingFeedback ? (
                         <>
-                          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                          <Loader2 className="h-3 w-3 animate-spin" />
                           Refining...
                         </>
                       ) : (
-                        "✨ Refine"
+                        <>
+                          <Sparkles className="h-3 w-3" />
+                          Refine
+                        </>
                       )}
                     </Button>
                   </div>
@@ -206,7 +209,7 @@ export default function SendMessage() {
           <p>
             Click on any message below to select it, use &ldquo;Suggest
             Messages&rdquo; for conversation starters, or write your message and
-            click &ldquo;✨ Refine&rdquo; to improve it with AI.
+            click &ldquo;Refine&rdquo; to improve it with AI.
           </p>
         </div>
         <Card>
