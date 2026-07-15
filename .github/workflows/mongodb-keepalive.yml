@@ -2,10 +2,9 @@ name: MongoDB Keep Alive
 
 on:
   schedule:
-    # Runs every 7 days at 00:00 UTC
-    - cron: "0 0 */7 * *"
+    # Every Sunday at 00:00 UTC
+    - cron: "0 0 * * 0"
 
-  # Allows manual execution
   workflow_dispatch:
 
 jobs:
@@ -15,7 +14,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - run: npm install mongodb
 
