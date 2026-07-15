@@ -1,0 +1,35 @@
+name: MongoDB Keep Alive
+
+on:
+  schedule:
+    # Runs every 7 days at 00:00 UTC
+    - cron: "0 0 */7 * *"
+
+  # Allows manual execution
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install mongodb
+
+      - name: Ping MongoDB Atlas
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          node -e "
+          const { MongoClient } = require('mongodb');
+          (async () => {
+            const client = new MongoClient(process.env.MONGODB_URI);
+            await client.connect();
+            await client.db('admin').command({ ping: 1 });
+            console.log('MongoDB ping successful');
+            await client.close();
+          })();
+          "
